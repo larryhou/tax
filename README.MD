@@ -1,7 +1,7 @@
 # 个税计算工具
 
 ```bash
-python tax.py -a 80000 -b 2000000
+python tax.py -a 80000 -b 640000
 ```
 
 > 参数说明
