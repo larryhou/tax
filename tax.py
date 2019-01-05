@@ -41,7 +41,7 @@ def caculate_new_tax(amount, bonus, table): # type: (float, float, list[tuple])-
 def caculate_old_tax(amount, bonus, table, bonus_table): # type: (float, float, list[tuple], list[tuple])->list[tuple[int,float,float]]
     if bonus > 0:
         bonus_tier = find_tax_tier(bonus, bonus_table)
-        bonus_tax = bonus_tier[2] * bonus - bonus_tier[3]
+        bonus_tax = bonus * bonus_tier[2] - bonus_tier[3]
     else:
         bonus_tax = 0
     if amount > TAX_FREE_AMOUNT:
@@ -53,11 +53,11 @@ def caculate_old_tax(amount, bonus, table, bonus_table): # type: (float, float, 
     result = []
     total_tax = 0
     for n in range(12):
-        tax = tax_amount * tier[2] - tier[3]
+        month_tax = tax_amount * tier[2] - tier[3]
         if n + 1 == 2:
-            tax += bonus_tax
-        total_tax += tax
-        result.append((n + 1, tax, total_tax))
+            month_tax += bonus_tax
+        total_tax += month_tax
+        result.append((n + 1, month_tax, total_tax))
     # print(result)
     return result
 
