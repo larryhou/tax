@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 TAX_FREE_AMOUNT = 5000
+BONUS_PAY_MONTH = 2
 
 def find_tax_tier(amount, table): # type: (float, list[tuple])->tuple
     min_idx, max_idx = 0, len(table) - 1
@@ -27,7 +28,7 @@ def caculate_new_tax(amount, bonus, table): # type: (float, float, list[tuple])-
     total_tax, total_amount = 0, 0
     for n in range(12):
         total_amount += tax_amount
-        if n + 1 == 2:
+        if n + 1 == BONUS_PAY_MONTH:
             total_amount += bonus
         tier = find_tax_tier(total_amount, table)
         assert tier
@@ -54,7 +55,7 @@ def caculate_old_tax(amount, bonus, table, bonus_table): # type: (float, float, 
     total_tax = 0
     for n in range(12):
         month_tax = tax_amount * tier[2] - tier[3]
-        if n + 1 == 2:
+        if n + 1 == BONUS_PAY_MONTH:
             month_tax += bonus_tax
         total_tax += month_tax
         result.append((n + 1, month_tax, total_tax))
@@ -66,8 +67,11 @@ def main():
     arguments = argparse.ArgumentParser()
     arguments.add_argument('--amount', '-a', required=True, type=int, help='计税额度=月薪-社保-公积金')
     arguments.add_argument('--bonus', '-b', type=int, default=0, help='年终奖金')
+    arguments.add_argument('--month', '-m', type=int, default=2, choices=range(1,13), help='年终奖发放月份')
     options = arguments.parse_args(sys.argv[1:])
     amount = options.amount # type: float
+    global BONUS_PAY_MONTH
+    BONUS_PAY_MONTH = options.month # type: int
     old_table = [
         (0, 3000, 0.03, 0),
         (3000, 12000, 0.1, 210),
